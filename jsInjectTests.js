@@ -80,6 +80,12 @@ describe("jInject Inversion of Control", function () {
             }).toThrow($$jsInject.ERROR_RECURSION);
         });
 
+        it("Given get request on service that does not exist then it throws an error", function () {
+           expect(function () {
+               var nothing = $$jsInject.get("nothing");
+           }).toThrow($$jsInject.ERROR_SERVICE);
+        });
+
     });
 
     describe("Run-time annotations", function(){

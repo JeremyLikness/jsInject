@@ -8,6 +8,7 @@ var $$jsInject = (function (ioc) {
         errorArray = "Must pass array.",
         errorRegistration = "Already registered.",
         errorFunction = "Must pass function to invoke.",
+        errorService = "Service does not exist.",
         container = {
             $$jsInject: function () {
                 return ioc;
@@ -65,7 +66,7 @@ var $$jsInject = (function (ioc) {
         if (wrapper) {
             return wrapper(lvl);
         }
-        throw "Service does not exist.";
+        throw errorService;
     }
 
     ioc.register = register;
@@ -75,6 +76,7 @@ var $$jsInject = (function (ioc) {
     ioc.ERROR_RECURSION = errorRecursion + (maxRecursion + 1);
     ioc.ERROR_FUNCTION = errorFunction;
     ioc.ERROR_REGISTRATION = errorRegistration;
+    ioc.ERROR_SERVICE = errorService;
 
     return ioc; 
     
