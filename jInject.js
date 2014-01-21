@@ -4,8 +4,12 @@
 var $$jsInject = (function (ioc) {
 
     var maxRecursion = 20,
+        errorRecursion = "Maximum recursion at ",
+        errorArray = "Must pass array.",
+        errorRegistration = "Already registered.",
+        errorFunction = "Must pass function to invoke.",
         container = {
-            $$ioc: function () {
+            $$jsInject: function () {
                 return ioc;
             }
         },
@@ -17,7 +21,7 @@ var $$jsInject = (function (ioc) {
                 args = [],
                 lvl = level || 0;
             if (lvl > maxRecursion) {
-                throw "Maximum recursion at " + lvl;
+                throw errorRecursion + lvl;
             }
             for (; i < deps.length; i += 1) {
                 args.push(get(deps[i], lvl + 1));
@@ -27,13 +31,13 @@ var $$jsInject = (function (ioc) {
 
     function register(name, annotatedArray) {
         if (!isArray(annotatedArray)) {
-            throw "Must pass array.";
+            throw errorArray;
         }
         if (container[name]) {
-            throw "Already registered.";
+            throw errorRegistration;
         }
         if (typeof annotatedArray[annotatedArray.length - 1] !== 'function') {
-                throw "Must pass function to invoke.";
+                throw errorFunction;
         }            
         container[name] = function (level) {
             var lvl = level || 0,
@@ -65,8 +69,13 @@ var $$jsInject = (function (ioc) {
     }
 
     ioc.register = register;
-    ioc.get = get;    
-    
+    ioc.get = get;
+
+    ioc.ERROR_ARRAY = errorArray;
+    ioc.ERROR_RECURSION = errorRecursion + (maxRecursion + 1);
+    ioc.ERROR_FUNCTION = errorFunction;
+    ioc.ERROR_REGISTRATION = errorRegistration;
+
     return ioc; 
     
 })($$jsInject || ($$jsInject = {}));
