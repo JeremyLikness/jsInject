@@ -45,7 +45,7 @@ It handles nested dependencies, avoids infinite recursion, takes multiple patter
     var svcA = $$jsInject.get("serviceA");
     var depB = $$jsInject.get("dependencyB");     
 
-Pass a unique name for the instance to the registration function, then an array. The array should either contain the function if the funtion itself is annoted with the special property `$$deps`, or a list of named dependencies followed by the function in an array if you want to annotate the dependencies at run-time. 
+Pass a unique name for the instance to the registration function, then an array. The array should either contain the function if the function itself is annoted with the special property `$$deps`, or a list of named dependencies followed by the function in an array if you want to annotate the dependencies at run-time. 
 
 See the tests to learn more. 
 
