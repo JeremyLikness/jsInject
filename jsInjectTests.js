@@ -2,6 +2,14 @@ describe("jsInject Inversion of Control", function () {
 
     var empty = function() {};
 
+    $$jsInject.register("echoFn", [function() {
+        return {
+            echo: function(msg) {
+                return msg;
+            }
+        };
+    }]);
+
     it("Given ioc when $$jsInject requested then returns self.", function () {
         var expected = $$jsInject;
         var actual = $$jsInject.get('$$jsInject');
@@ -12,39 +20,51 @@ describe("jsInject Inversion of Control", function () {
 
         it("Given self-invoking constructor function when registered then registers successfully", function() {
 
+            var expected = "1";
+
             var fn = (function() {
-                function Fn() {}
-                Fn.prototype.test = "1";
+                function Fn(echo) {
+                    this.echo = echo;
+                    this.test = function() {
+                        return echo.echo(expected);
+                    };
+                }
                 return Fn;
             })();
 
-            $$jsInject.register("1", [fn]);
+            $$jsInject.register("1", ["echoFn", fn]);
             var actual = $$jsInject.get("1");
-            expect(actual.test).toBe("1");
+            expect(actual.test()).toBe(expected);
         });
 
         it("Given function constructor when registered then registers successfully", function() {
 
-            function Fn() {
-                this.test = "2";
+            var expected = "2";
+
+            function Fn(echo) {
+                this.test = echo.echo(expected);
             }
 
-            $$jsInject.register("2", [Fn]);
+            $$jsInject.register("2", ["echoFn", Fn]);
             var actual = $$jsInject.get("2");
-            expect(actual.test).toBe("2");
+            expect(actual.test).toBe(expected);
         });
 
         it("Given function factory method when registered then registers successfully", function() {
 
-            var factory = function() {
+            var expected = "3";
+
+            var factory = function(echo) {
                 return {
-                    test: "3"
+                    test: echo.echo(expected)
                 };
             };
 
+            factory.$$deps = ["echoFn"];
+
             $$jsInject.register("3", [factory]);
             var actual = $$jsInject.get("3");
-            expect(actual.test).toBe("3");
+            expect(actual.test).toBe(expected);
         });
 
     });
