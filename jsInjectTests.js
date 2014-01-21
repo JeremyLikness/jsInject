@@ -1,4 +1,4 @@
-describe("jInject Inversion of Control", function () {
+describe("jsInject Inversion of Control", function () {
 
     var empty = function() {};
 
