@@ -1,7 +1,7 @@
 // Super-simple dependency injection for JavaScript. 
 // Supports n-depth of dependencies and tracks recursion 
 
-var $$jInject = (function (ioc) {
+var $$jsInject = (function (ioc) {
 
     var maxRecursion = 20,
         container = {
@@ -69,4 +69,4 @@ var $$jInject = (function (ioc) {
     
     return ioc; 
     
-})($$jInject || ($$jInject = {}));
+})($$jsInject || ($$jsInject = {}));
