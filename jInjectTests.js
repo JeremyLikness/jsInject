@@ -87,13 +87,13 @@ describe("jInject Inversion of Control", function () {
         function serviceA() {
             return {
                 id: "a"
-            }
+            };
         }
 
         function serviceB(serviceA) {
             return {
                 id: serviceA.id + "b"
-            }
+            };
         }
 
         function serviceC(serviceA, serviceB) {
@@ -152,6 +152,5 @@ describe("jInject Inversion of Control", function () {
                 var c = $$jsInject.get("ServiceC");
             }).toThrow();
         });
-
     });
 });
