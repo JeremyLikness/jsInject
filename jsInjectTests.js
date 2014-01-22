@@ -1,19 +1,22 @@
 describe("jsInject Inversion of Control", function () {
 
     var empty = function() {};
+    var $jsInject;
 
-    $$jsInject.register("echoFn", [function() {
-        return {
-            echo: function(msg) {
-                return msg;
-            }
-        };
-    }]);
+    beforeEach(function() {
+        $jsInject = new WintellectJs.$$jsInject();
+        $jsInject.register("echoFn", [function() {
+            return {
+                echo: function(msg) {
+                    return msg;
+                }
+            };
+        }]);
+    });
 
     it("Given ioc when $$jsInject requested then returns self.", function () {
-        var expected = $$jsInject;
-        var actual = $$jsInject.get('$$jsInject');
-        expect(actual).toBe(expected);
+        var actual = $jsInject.get('$$jsInject');
+        expect(actual).toBe($jsInject);
     });
 
     describe("First-time registration", function() {
@@ -32,8 +35,8 @@ describe("jsInject Inversion of Control", function () {
                 return Fn;
             })();
 
-            $$jsInject.register("1", ["echoFn", fn]);
-            var actual = $$jsInject.get("1");
+            $jsInject.register("1", ["echoFn", fn]);
+            var actual = $jsInject.get("1");
             expect(actual.test()).toBe(expected);
         });
 
@@ -45,8 +48,8 @@ describe("jsInject Inversion of Control", function () {
                 this.test = echo.echo(expected);
             }
 
-            $$jsInject.register("2", ["echoFn", Fn]);
-            var actual = $$jsInject.get("2");
+            $jsInject.register("2", ["echoFn", Fn]);
+            var actual = $jsInject.get("2");
             expect(actual.test).toBe(expected);
         });
 
@@ -62,8 +65,8 @@ describe("jsInject Inversion of Control", function () {
 
             factory.$$deps = ["echoFn"];
 
-            $$jsInject.register("3", [factory]);
-            var actual = $$jsInject.get("3");
+            $jsInject.register("3", [factory]);
+            var actual = $jsInject.get("3");
             expect(actual.test).toBe(expected);
         });
 
@@ -73,37 +76,39 @@ describe("jsInject Inversion of Control", function () {
 
         it("Given something other than an array passed then it throws an error", function() {
             expect(function() {
-                $$jsInject.register("4", "4");
-            }).toThrow($$jsInject.ERROR_ARRAY);
+                $jsInject.register("4", "4");
+            }).toThrow($jsInject.ERROR_ARRAY);
         });
 
         it("Given lst item in array passed is not a function then it throws an error", function() {
             expect(function() {
-                $$jsInject.register("4", ["4"]);
-            }).toThrow($$jsInject.ERROR_FUNCTION);
+                $jsInject.register("4", ["4"]);
+            }).toThrow($jsInject.ERROR_FUNCTION);
         });
 
         it("Given a registration already exists when duplicate registration is attempted then it throws an error", function()
         {
+            $jsInject.register("3", [empty]);
+
             expect(function() {
-                $$jsInject.register("3", [empty]);
-            }).toThrow($$jsInject.ERROR_REGISTRATION);
+                $jsInject.register("3", [empty]);
+            }).toThrow($jsInject.ERROR_REGISTRATION);
         });
 
         it("Given recursive dependencies when a dependency is requested then it throws an error", function () {
 
-            $$jsInject.register("depA", ["depB", empty]);
-            $$jsInject.register("depB", ["depA", empty]);
+            $jsInject.register("depA", ["depB", empty]);
+            $jsInject.register("depB", ["depA", empty]);
 
             expect(function () {
-                var depA = $$jsInject.get("depA");
-            }).toThrow($$jsInject.ERROR_RECURSION);
+                var depA = $jsInject.get("depA");
+            }).toThrow($jsInject.ERROR_RECURSION);
         });
 
         it("Given get request on service that does not exist then it throws an error", function () {
            expect(function () {
-               var nothing = $$jsInject.get("nothing");
-           }).toThrow($$jsInject.ERROR_SERVICE);
+               var nothing = $jsInject.get("nothing");
+           }).toThrow($jsInject.ERROR_SERVICE);
         });
 
     });
@@ -116,31 +121,33 @@ describe("jsInject Inversion of Control", function () {
             };
         }
 
-        function serviceB(serviceA) {
+        function serviceB(a) {
             return {
-                id: serviceA.id + "b"
+                id: a.id + "b"
             };
         }
 
-        function serviceC(serviceA, serviceB) {
+        function serviceC(a, b) {
             return {
-                id: serviceA.id + serviceB.id + "b"
+                id: a.id + b.id + "c"
             };
         }
 
-        $$jsInject.register("serviceA", [serviceA]);
-        $$jsInject.register("serviceB", ["serviceA", serviceB]);
-        $$jsInject.register("serviceC", ["serviceA", serviceC]);
+        beforeEach(function() {
+            $jsInject.register("serviceA", [serviceA]);
+            $jsInject.register("serviceB", ["serviceA", serviceB]);
+            $jsInject.register("serviceC", ["serviceA", serviceC]);
+        });
 
         it ("Given registration with proper annotation then returns properly configured instance", function() {
             var expected = "ab";
-            var actual = $$jsInject.get("serviceB").id;
+            var actual = $jsInject.get("serviceB").id;
             expect(actual).toBe(expected);
         });
 
         it ("Given registration with improper annotation then throws exception due to bad reference", function() {
             expect(function () {
-                var c = $$jsInject.get("serviceC");
+                var c = $jsInject.get("serviceC");
             }).toThrow();
         });
     });
@@ -163,19 +170,21 @@ describe("jsInject Inversion of Control", function () {
 
         ServiceC.$$deps = ["ServiceA"];
 
-        $$jsInject.register("ServiceA", [ServiceA]);
-        $$jsInject.register("ServiceB", [ServiceB]);
-        $$jsInject.register("ServiceC", [ServiceC]);
+        beforeEach(function() {
+            $jsInject.register("ServiceA", [ServiceA]);
+            $jsInject.register("ServiceB", [ServiceB]);
+            $jsInject.register("ServiceC", [ServiceC]);
+        });
 
         it ("Given registration with properly annotated function then returns properly configured instance", function() {
             var expected = "ab";
-            var actual = $$jsInject.get("ServiceB").id;
+            var actual = $jsInject.get("ServiceB").id;
             expect(actual).toBe(expected);
         });
 
         it ("Given registration with improperly annotated function then throws exception due to bad reference", function() {
             expect(function () {
-                var c = $$jsInject.get("ServiceC");
+                var c = $jsInject.get("ServiceC");
             }).toThrow();
         });
     });
