@@ -7,6 +7,10 @@ Inspired by the `$injector` service in the Angular framework library, I built th
 
 It handles nested dependencies, avoids infinite recursion, takes multiple patterns for object creation, and uses annotations for dependencies that are minify-friendly. You may either set an array on the object to indicate the list of dependencies to inject into the constructor or specify the dependencies when you add the object to the container.
 
+Create an instance of the container (you may have as many containers as you like, but they are not aware of each other): 
+
+    var $$jsInject = new WintellectJs.$$jsInject(); 
+
 `$$jsInject` can handle multiple patterns for object creation: 
 
 **Factory**
