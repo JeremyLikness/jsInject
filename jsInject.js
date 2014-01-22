@@ -64,7 +64,12 @@ var WintellectJs;
             };
             var ioc = {
                 get: _this.get,
-                register: _this.register
+                register: _this.register,
+                "ERROR_ARRAY": this.errorArray,
+                "ERROR_RECURSION": this.errorRecursion + (this.maxRecursion + 1),
+                "ERROR_FUNCTION": this.errorFunction,
+                "ERROR_REGISTRATION": this.errorRegistration,
+                "ERROR_SERVICE": this.errorService
             };
             this.container = {
                 "$$jsInject": function () {
@@ -73,41 +78,6 @@ var WintellectJs;
             };
             return ioc;
         }
-        Object.defineProperty($$jsInject.prototype, "ERROR_ARRAY", {
-            get: function () {
-                return this.errorArray;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty($$jsInject.prototype, "ERROR_RECURSION", {
-            get: function () {
-                return this.errorRecursion + (this.maxRecursion + 1);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty($$jsInject.prototype, "ERROR_FUNCTION", {
-            get: function () {
-                return this.errorFunction;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty($$jsInject.prototype, "ERROR_REGISTRATION", {
-            get: function () {
-                return this.errorRegistration;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty($$jsInject.prototype, "ERROR_SERVICE", {
-            get: function () {
-                return this.errorService;
-            },
-            enumerable: true,
-            configurable: true
-        });
         return $$jsInject;
     })();
     WintellectJs.$$jsInject = $$jsInject;
