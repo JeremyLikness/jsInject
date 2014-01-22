@@ -12,11 +12,6 @@ var WintellectJs;
             this.errorRegistration = "Already registered.";
             this.errorFunction = "Must pass function to invoke.";
             this.errorService = "Service does not exist.";
-            this.container = {
-                "$$jsInject": function () {
-                    return _this;
-                }
-            };
             this.isArray = function (arr) {
                 return Object.prototype.toString.call(arr) === '[object Array]';
             };
@@ -67,6 +62,16 @@ var WintellectJs;
                     return result;
                 };
             };
+            var ioc = {
+                get: _this.get,
+                register: _this.register
+            };
+            this.container = {
+                "$$jsInject": function () {
+                    return ioc;
+                }
+            };
+            return ioc;
         }
         Object.defineProperty($$jsInject.prototype, "ERROR_ARRAY", {
             get: function () {
