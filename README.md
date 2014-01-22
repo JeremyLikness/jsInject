@@ -25,9 +25,10 @@ It handles nested dependencies, avoids infinite recursion, takes multiple patter
 
 **Self-Invoking Function** 
 
-    var ServiceA = (function(dependencyB) {
-        function ServiceA() {}
-        ServiceA.prototype.id = dependencyB.getId();
+    var ServiceA = (function() {
+        function ServiceA(dependencyB) {
+            this.id = dependencyB.getId();
+        }
         return ServiceA;
     })();
 
