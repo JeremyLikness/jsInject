@@ -4,7 +4,7 @@ describe("jsInject Inversion of Control", function () {
     var $jsInject;
 
     beforeEach(function() {
-        $jsInject = new WintellectJs.$$jsInject();
+        $jsInject = new $$jsInject();
         $jsInject.register("echoFn", [function() {
             return {
                 echo: function(msg) {
