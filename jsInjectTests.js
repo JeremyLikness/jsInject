@@ -92,7 +92,7 @@ describe("jsInject Inversion of Control", function () {
 
             expect(function() {
                 $jsInject.register("3", [empty]);
-            }).toThrow($jsInject.ERROR_REGISTRATION);
+            }).toThrow($$jsInject.ERROR_REGISTRATION);
         });
 
         it("Given recursive dependencies when a dependency is requested then it throws an error", function () {
@@ -102,13 +102,13 @@ describe("jsInject Inversion of Control", function () {
 
             expect(function () {
                 var depA = $jsInject.get("depA");
-            }).toThrow($jsInject.ERROR_RECURSION);
+            }).toThrow($$jsInject.ERROR_RECURSION);
         });
 
         it("Given get request on service that does not exist then it throws an error", function () {
            expect(function () {
                var nothing = $jsInject.get("nothing");
-           }).toThrow($jsInject.ERROR_SERVICE);
+           }).toThrow($$jsInject.ERROR_SERVICE);
         });
 
     });
@@ -147,7 +147,7 @@ describe("jsInject Inversion of Control", function () {
 
         it ("Given registration with improper annotation then throws exception due to bad reference", function() {
             expect(function () {
-                var c = $jsInject.get("serviceC");
+                $jsInject.get("serviceC");
             }).toThrow();
         });
     });
@@ -184,7 +184,7 @@ describe("jsInject Inversion of Control", function () {
 
         it ("Given registration with improperly annotated function then throws exception due to bad reference", function() {
             expect(function () {
-                var c = $jsInject.get("ServiceC");
+                $jsInject.get("ServiceC");
             }).toThrow();
         });
     });

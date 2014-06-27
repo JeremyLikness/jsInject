@@ -2,20 +2,20 @@
 
 (function (w) {
 
-    var constants = {
-        maxRecursion: 20,
-        errorRecursion: 'Maximum recursion at ',
-        errorArray: 'Must pass array.',
-        errorRegistration: 'Already registered.',
-        errorFunction: 'Must pass function to invoke.',
-        errorService: 'Service does not exist.'
-        }, isArray = function (arr) {
-        return Object.prototype.toString.call(arr) === '[object Array]';
+    var maxRecursion = 20,
+        isArray = function (arr) {
+            return Object.prototype.toString.call(arr) === '[object Array]';
         };
 
     function JsInject () {
         this.container = {};
     }
+
+    JsInject.ERROR_RECURSION = 'Maximum recursion at ';
+    JsInject.ERROR_REGISTRATION = 'Already registered.';
+    JsInject.ERROR_ARRAY = 'Must pass array.';
+    JsInject.ERROR_FUNCTION = 'Must pass function to invoke.';
+    JsInject.ERROR_SERVICE = 'Service does not exist.';
 
     JsInject.prototype.get = function (name, level) {
         var wrapper = this.container[name],
@@ -23,15 +23,15 @@
         if (wrapper) {
             return wrapper(lvl);
         }
-        throw constants.errorService;
+        throw JsInject.ERROR_SERVICE;
     };
 
     JsInject.prototype.invoke = function (fn, deps, instance, level) {
         var i = 0,
             args = [],
             lvl = level || 0;
-        if (lvl > constants.maxRecursion) {
-            throw constants.errorRecursion + lvl;
+        if (lvl > maxRecursion) {
+            throw JsInject.ERROR_RECURSION + lvl;
         }
         for (; i < deps.length; i += 1) {
             args.push(this.get(deps[i], lvl + 1));
@@ -41,15 +41,15 @@
 
     JsInject.prototype.register = function (name, annotatedArray) {
         if (!isArray(annotatedArray)) {
-            throw constants.errorArray;
+            throw JsInject.ERROR_ARRAY;
         }
 
         if (this.container[name]) {
-            throw constants.errorRegistration;
+            throw JsInject.ERROR_REGISTRATION;
         }
 
         if (typeof annotatedArray[annotatedArray.length - 1] !== 'function') {
-            throw constants.errorFunction;
+            throw JsInject.ERROR_FUNCTION;
         }
 
         var _this = this;
