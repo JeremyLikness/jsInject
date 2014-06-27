@@ -77,13 +77,13 @@ describe("jsInject Inversion of Control", function () {
         it("Given something other than an array passed then it throws an error", function() {
             expect(function() {
                 $jsInject.register("4", "4");
-            }).toThrow($jsInject.ERROR_ARRAY);
+            }).toThrow($$jsInject.ERROR_ARRAY);
         });
 
         it("Given lst item in array passed is not a function then it throws an error", function() {
             expect(function() {
                 $jsInject.register("4", ["4"]);
-            }).toThrow($jsInject.ERROR_FUNCTION);
+            }).toThrow($$jsInject.ERROR_FUNCTION);
         });
 
         it("Given a registration already exists when duplicate registration is attempted then it throws an error", function()
