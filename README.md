@@ -9,6 +9,8 @@ It handles nested dependencies, avoids infinite recursion, takes multiple patter
 minification-friendly. You may either set an array on the object to indicate the list of dependencies to inject into the constructor or specify the dependencies
 when you add the object to the container.
 
+Learn more about jsInject in [this blog post](http://csharperimage.jeremylikness.com/2014/06/dependency-injection-explained-via.html).
+
 Create an instance of the container (you may have as many containers as you like, but they are not aware of each other): 
 
     var $jsInject = new $$jsInject();
