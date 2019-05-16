@@ -2,7 +2,7 @@
 
 (function (w) {
 
-    var maxRecursion = 20,
+    var stack = {},
         isArray = function (arr) {
             return Object.prototype.toString.call(arr) === '[object Array]';
         };
@@ -11,31 +11,33 @@
         this.container = {};
     }
 
-    JsInject.ERROR_RECURSION = 'Maximum recursion at ';
+    JsInject.ERROR_RECURSION = 'Recursive failure : Circular reference for dependency ';
     JsInject.ERROR_REGISTRATION = 'Already registered.';
     JsInject.ERROR_ARRAY = 'Must pass array.';
     JsInject.ERROR_FUNCTION = 'Must pass function to invoke.';
     JsInject.ERROR_SERVICE = 'Service does not exist.';
 
-    JsInject.prototype.get = function (name, level) {
-        var wrapper = this.container[name],
-            lvl = level || 0;
+    JsInject.prototype.get = function(name) {
+        var wrapper = this.container[name];
         if (wrapper) {
-            return wrapper(lvl);
+            return wrapper();
         }
         throw JsInject.ERROR_SERVICE;
     };
 
-    JsInject.prototype.invoke = function (fn, deps, instance, level) {
+    JsInject.prototype.invoke = function (fn, deps, instance, name) {
         var i = 0,
-            args = [],
-            lvl = level || 0;
-        if (lvl > maxRecursion) {
-            throw JsInject.ERROR_RECURSION + lvl;
+            args = [];
+        if (stack[name]) {
+            throw JsInject.ERROR_RECURSION + name + " : " + JSON.stringify(Object.keys(stack));
         }
+        
+        stack[name] = instance; 
         for (; i < deps.length; i += 1) {
-            args.push(this.get(deps[i], lvl + 1));
+            args.push(this.get(deps[i]));
         }
+        delete stack[name];
+        
         return fn.apply(instance, args);
     };
 
@@ -53,9 +55,8 @@
         }
 
         var _this = this;
-        this.container[name] = function (level) {
-            var lvl = level || 0,
-                Template = function () {},
+        this.container[name] = function () {
+            var Template = function () {},
                 result = {},
                 instance,
                 fn = annotatedArray[annotatedArray.length - 1],
@@ -64,7 +65,7 @@
                 injected;
             Template.prototype = fn.prototype;
             instance = new Template();
-            injected = _this.invoke(fn, deps, instance, lvl + 1);
+            injected = _this.invoke(fn, deps, instance, name);
             result = injected || instance;
             _this.container[name] = function () {
                 return result;
