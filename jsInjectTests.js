@@ -94,6 +94,16 @@ describe("jsInject Inversion of Control", function () {
                 $jsInject.register("3", [empty]);
             }).toThrow($$jsInject.ERROR_REGISTRATION);
         });
+        
+        it("Given a registration already exists when duplicate registration is attempted with the same selector then it throws an error", function()
+                {
+                    $jsInject.register("3", [empty], "tagA");
+                    $jsInject.register("3", [empty], "tagB");
+
+                    expect(function() {
+                        $jsInject.register("3", [empty], "tagA");
+                    }).toThrow($$jsInject.ERROR_REGISTRATION);
+                });        
 
         it("Given recursive dependencies when a dependency is requested then it throws an error", function () {
 
